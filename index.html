@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Изоляция PRO</title>
+    <style>
+        :root {
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --primary: #007aff;
+            --primary-fade: rgba(0, 122, 255, 0.1);
+            --success: #34c759;
+            --danger: #ff3b30;
+            --text-main: #1c1c1e;
+            --text-muted: #8e8e93;
+            --border: #e5e5ea;
+            --radius: 16px;
+            --nav-height: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 12px 10px calc(var(--nav-height) + 20px) 10px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            width: 100%;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        input {
+            width: 100%;
+            background: var(--bg-color);
+            border: 2px solid transparent;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-fade);
+        }
+
+        .segmented {
+            display: flex;
+            background: var(--bg-color);
+            padding: 3px;
+            border-radius: 10px;
+            gap: 2px;
+            width: 100%;
+        }
+
+        .segmented button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 8px 2px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .segmented button.active {
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .metric {
+            background: var(--primary-fade);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .metric .m-label {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .metric .m-value {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* Полоска шага между точками */
+        .step-badge {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .step-badge b {
+            font-size: 16px;
+            color: #15803d;
+        }
+
+        .svg-container {
+            width: 100%;
+            background: #fafafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+        }
+
+        .table-container {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            text-align: center;
+            min-width: 280px;
+        }
+
+        th {
+            background: #f9f9fb;
+            padding: 10px 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 6px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            transition: background-color 0.15s;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td b {
+            font-size: 15px;
+            color: var(--primary);
+        }
+
+        .td-step {
+            color: #15803d;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        tr.selected-row td {
+            background-color: var(--primary-fade) !important;
+            color: var(--primary) !important;
+        }
+        tr.selected-row td b {
+            color: var(--primary) !important;
+            font-weight: 800;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            text-align: center;
+            font-weight: normal;
+        }
+
+        
+        /* History & Session styles */
+        .btn-save {
+            background: var(--success);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2);
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+        .btn-save:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .hist-container {
+            max-height: 380px;
+            overflow-y: auto;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .hist-item {
+            background: var(--bg-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.15s;
+        }
+        .hist-item:active {
+            border-color: var(--primary);
+            background: var(--primary-fade);
+        }
+        .hist-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .hist-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 15px;
+        }
+        .hist-badge-l {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-block;
+        }
+        .hist-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .hist-del {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 18px;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .clear-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навигация -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="otvod" onclick="switchTab('otvod')">
+            <span class="nav-icon">⤻</span>Отвод
+        </button>
+        <button class="nav-item" data-tab="tee" onclick="switchTab('tee')">
+            <span class="nav-icon">┴</span>Тройник
+        </button>
+        <button class="nav-item" data-tab="pants" onclick="switchTab('pants')">
+            <span class="nav-icon">⋏</span>Штаны
+        </button>
+        <button class="nav-item" data-tab="cone" onclick="switchTab('cone')">
+            <span class="nav-icon">◺</span>Конус
+        </button>
+    </nav>
+
+
+    <!-- ==================== TAB: ОТВОД ==================== -->
+    <div id="tab-otvod" class="tab-content active">
+        <header>
+            <h1>Отвод PRO</h1>
+            <p>Расчет развертки сегмента</p>
+        </header>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0;">
+                <div class="col">
+                    <label>Внутр. Диаметр (D)</label>
+                    <input type="number" id="otv_valD" value="100" inputmode="decimal" style="color: var(--primary); background: rgba(0, 122, 255, 0.05);">
+                </div>
+                <div class="col">
+                    <label>Развертка (L)</label>
+                    <input type="number" id="otv_valL" value="315.7" inputmode="decimal">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Угол отвода (°)</label>
+                    <input type="number" id="otv_valAng" value="90" inputmode="decimal">
+                </div>
+                <div class="col">
+                    <label>Толщина (S)</label>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="number" id="otv_valS" value="0.55" inputmode="decimal" step="0.05" style="width: 70px; padding: 12px 4px;">
+                        <div class="segmented" id="otv_thick-buttons" style="flex: 1;">
+                            <button data-val="0.5">0.5</button>
+                            <button data-val="0.55" class="active">0.55</button>
+                            <button data-val="0.8">0.8</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0;">
+                <div class="col">
+                    <label>Радиус (R)</label>
+                    <input type="number" id="otv_valR" value="150" inputmode="decimal">
+                </div>
+                <div class="col">
+                    <label>Шейка (H)</label>
+                    <input type="number" id="otv_valH" value="15" inputmode="decimal">
+                </div>
+            </div>
+            <div class="hint">Измените шейку — радиус пересчитается сам</div>
+        </div>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0;">
+                <div class="col">
+                    <label>Сегменты</label>
+                    <div class="segmented" id="otv_seg-buttons">
+                        <button data-val="2">2</button>
+                        <button data-val="3">3</button>
+                        <button data-val="4" class="active">4</button>
+                        <button data-val="5">5</button>
+                        <button data-val="6">6</button>
+                    </div>
+                </div>
+                <div class="col">
+                    <label>Точки</label>
+                    <div class="segmented" id="otv_pts-buttons">
+                        <button data-val="8">8</button>
+                        <button data-val="12" class="active">12</button>
+                        <button data-val="16">16</button>
+                        <button data-val="24">24</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0; margin-bottom: 12px;">
+                <div class="col">
+                    <label>Расположение шва</label>
+                    <div class="segmented" id="otv_seam-buttons">
+                        <button data-val="throat" class="active">Шейка</button>
+                        <button data-val="side">Сбоку</button>
+                        <button data-val="heel">Затылок</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 0; margin-bottom: 12px;">
+                <div class="col">
+                    <label>Направление (Слева-направо)</label>
+                    <div class="segmented" id="otv_dir-buttons">
+                        <button data-val="normal" class="active">Обычное ➔</button>
+                        <button data-val="reverse">Зеркало ⬅</button>
+                    </div>
+                </div>
+            </div>
+
+            <label>Развертка крайнего полусегмента</label>
+            <div class="svg-container">
+                <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="otv_Grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="rgba(0, 122, 255, 0.4)"/>
+                            <stop offset="100%" stop-color="rgba(0, 122, 255, 0.05)"/>
+                        </linearGradient>
+                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e5ea" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="300" height="120" fill="url(#grid)" />
+                    <path id="otv_path" d="" fill="url(#otv_Grad)" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
+                    <line x1="0" y1="118" x2="300" y2="118" stroke="#1c1c1e" stroke-width="3" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="step-badge">
+                <span>Шаг между точками (циркуль/разметка):</span>
+                <b id="otv_step_val">0 мм</b>
+            </div>
+            <label>Координаты отвода (мм)</label>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>X (От нуля)</th>
+                            <th>Шаг (ΔX)</th>
+                            <th>Высота (Y)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="otv_table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Сохранение и Память на 50 отводов -->
+        <button class="btn-save" onclick="saveOtvodToHistory()">💾 Сохранить отвод в память</button>
+
+        <div class="card" style="margin-top: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="margin: 0;">Память (до 50 отводов, автосортировка по L)</label>
+                <button class="clear-btn" onclick="clearOtvodHistory()">Очистить</button>
+            </div>
+            <div id="otvod_hist_list" class="hist-container"></div>
+        </div>
+
+    </div>
+
+
+    <!-- ==================== TAB: ТРОЙНИК ==================== -->
+    <div id="tab-tee" class="tab-content">
+        <header>
+            <h1>Тройник</h1>
+            <p>Прямая и косая врезка</p>
+        </header>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0;">
+                <div class="col">
+                    <label>D Осн. (Внутр)</label>
+                    <input type="number" id="tee_D" value="200" inputmode="decimal">
+                </div>
+                <div class="col">
+                    <label>L Осн. (Развертка)</label>
+                    <input type="number" id="tee_L" value="630.0" inputmode="decimal">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>d Врезки (Внутр)</label>
+                    <input type="number" id="tee_d" value="100" inputmode="decimal" style="color: var(--primary); background: rgba(0, 122, 255, 0.05);">
+                </div>
+                <div class="col">
+                    <label>l Врезки (Развертка)</label>
+                    <input type="number" id="tee_l" value="315.7" inputmode="decimal">
+                </div>
+            </div>
+            <div class="hint">Врезка должна быть меньше или равна основной трубе</div>
+        </div>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0;">
+                <div class="col">
+                    <label>Угол врезки (°)</label>
+                    <input type="number" id="tee_A" value="90" inputmode="decimal">
+                </div>
+                <div class="col">
+                    <label>Мин. Высота (H)</label>
+                    <input type="number" id="tee_H" value="50" inputmode="decimal">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Толщина (S)</label>
+                    <input type="number" id="tee_S" value="0.55" inputmode="decimal" step="0.05">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row" style="margin-top: 0; margin-bottom: 12px;">
+                <div
